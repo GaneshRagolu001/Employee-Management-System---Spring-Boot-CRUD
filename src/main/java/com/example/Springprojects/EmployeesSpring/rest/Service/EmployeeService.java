@@ -1,12 +1,12 @@
-package com.example.Springprojects.EmployeesSpring.rest.DAO;
+package com.example.Springprojects.EmployeesSpring.rest.Service;
+
 
 import com.example.Springprojects.EmployeesSpring.rest.entity.Employee;
-import jakarta.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface StudentDAO  {
-
+public interface EmployeeService {
     public List<Employee> findAll();
 
     public Employee findbyId(int id);
@@ -14,5 +14,6 @@ public interface StudentDAO  {
     public Employee save(Employee employee);
 
     public void deletebyId(int id);
+
 
 }
