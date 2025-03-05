@@ -5,46 +5,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class SecurityConfig  {
 
     @Bean
-    public InMemoryUserDetailsManager myuserDetailsManager(){
-        UserDetails Ganesh = User.builder()
-                .username("Ganesh")
-                .password("{noop}Gane@2005")
-                .roles("Employee","Manager","Admin")
-                .build();
+    public UserDetailsManager userDetailsManager(DataSource dataSource){
 
-        UserDetails Jaswanth = User.builder()
-                .username("Jaswanth")
-                .password("{noop}Gane@2005")
-                .roles("Employee")
-                .build();
-
-        UserDetails Hemanth = User.builder()
-                .username("Hemanth")
-                .password("{noop}Gane@2005")
-                .roles("Employee","Manager")
-                .build();
-
-        return new InMemoryUserDetailsManager(Ganesh,Jaswanth,Hemanth);
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests(configure ->
                 configure
-                        .requestMatchers(HttpMethod.GET,"/api/employees").hasRole("Employee")
-                        .requestMatchers(HttpMethod.GET,"/api/employees/**").hasRole("Employee")
-                        .requestMatchers(HttpMethod.POST,"/api/employees").hasRole("Manager")
-                        .requestMatchers(HttpMethod.PUT,"/api/employees/**").hasRole("Manager")
-                        .requestMatchers(HttpMethod.DELETE,"/api/employees/**").hasRole("Admin")
+                        .requestMatchers(HttpMethod.GET,"/api/employees").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET,"/api/employees/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST,"/api/employees").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT,"/api/employees/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/employees/**").hasRole("ADMIN")
+
         );
         //user basic authentication
         httpSecurity.httpBasic(Customizer.withDefaults());
@@ -55,3 +40,26 @@ public class SecurityConfig  {
         return httpSecurity.build();
     }
 }
+
+//@Bean
+//public InMemoryUserDetailsManager myuserDetailsManager(){
+//    UserDetails Ganesh = User.builder()
+//            .username("Ganesh")
+//            .password("{noop}Gane@2005")
+//            .roles("Employee","Manager","Admin")
+//            .build();
+//
+//    UserDetails Jaswanth = User.builder()
+//            .username("Jaswanth")
+//            .password("{noop}Gane@2005")
+//            .roles("Employee")
+//            .build();
+//
+//    UserDetails Hemanth = User.builder()
+//            .username("Hemanth")
+//            .password("{noop}Gane@2005")
+//            .roles("Employee","Manager")
+//            .build();
+//
+//    return new InMemoryUserDetailsManager(Ganesh,Jaswanth,Hemanth);
+//}
